@@ -1,6 +1,6 @@
 #
 # Cookbook:: user_ssh
-# Resource:: authorized_key
+# Resource:: known_host
 #
 # Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>
 #
@@ -19,27 +19,22 @@
 use 'user_ssh'
 
 property :template, String,
-          default: 'authorized_keys.erb',
+          default: 'known_hosts.erb',
           description: 'Template to use to generate the configuration file'
 
-property :options, [String, Array],
-          coerce: proc { |p| p.is_a?(Array) ? p.join(',') : p }
-
-property :comment, String,
-          callbacks: {
-            'Comment cannot include a newline (\n) character' => ->(p) { !/\n/.match?(p) },
-          }
+property :host, String,
+          name_property: true
 
 action :create do
   key_valid?
   init_ssh_template_resource
 
-  ssh_template_resource.variables['keys'] ||= []
-  ssh_template_resource.variables['keys'].push(key_hash)
+  ssh_template_resource.variables['hosts'] ||= []
+  ssh_template_resource.variables['hosts'].push(key_hash)
 end
 
 action :delete do
   init_ssh_template_resource
 
-  ssh_template_resource.variables['keys'].delete(key_hash) unless nil_or_empty(ssh_template_resource.variables['keys'])
+  ssh_template_resource.variables['keys'].delete(key_hash) unless nil_or_empty(authorized_key_file_resource.variables['keys'])
 end

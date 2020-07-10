@@ -2,17 +2,31 @@
 # Cookbook:: user_ssh
 # Library:: general
 #
-# Copyright:: 2020, Ben Hughes, All Rights Reserved.
+# Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>, All Rights Reserved.
 
 module UserSsh
   module Cookbook
     module GeneralHelpers
-      def user_home_ssh_dir
-        "#{Dir.home(new_resource.user)}/.ssh"
+      def user_home_dir
+        Dir.home(user)
       end
 
-      def user_authorized_key_file
-        "#{user_home_ssh_dir}/authorized_keys"
+      def user_ssh_file
+        case declared_type
+        when :user_ssh_authorized_key
+          'authorized_keys'
+        when :user_ssh_known_host
+          'known_hosts'
+        else
+          raise "user_ssh_file: Unsupported resource #{declared_type}"
+        end
+      end
+
+      def comment_default
+        return comment unless nil_or_empty?(comment)
+        return name unless nil_or_empty?(name)
+
+        nil
       end
 
       def nil_or_empty?(property)

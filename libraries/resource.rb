@@ -2,24 +2,50 @@
 # Cookbook:: user_ssh
 # Library:: resource
 #
-# Copyright:: 2020, Ben Hughes, All Rights Reserved.
+# Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>, All Rights Reserved.
 
 module UserSsh
   module Cookbook
     module ResourceHelpers
-      def init_authorized_key_file_resource
-        create_authorized_key_file_resource unless authorized_key_file_resource_exist?
+      KEY_REGEX ||= %r{^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=|[A-Za-z0-9+\/]{4})$}x.freeze
+
+      def init_ssh_template_resource
+        create_ssh_template_resource unless ssh_template_resource_exist?
       end
 
-      def authorized_key_file_resource
-        find_resource!(:template, new_resource.authorized_key_file)
+      def ssh_template_resource
+        find_resource!(:template, new_resource.ssh_generate_file)
+      end
+
+      def key_valid?
+        raise ArgumentError, 'Key validation failed' unless KEY_REGEX.match?(new_resource.key) || !new_resource.validate_key
+      end
+
+      def key_hash
+        case new_resource.declared_type
+        when :user_ssh_authorized_key
+          {
+            options: new_resource.options,
+            keytype: new_resource.keytype,
+            key: new_resource.key,
+            comment: new_resource.comment,
+          }
+        when :user_ssh_known_host
+          {
+            host: new_resource.host,
+            keytype: new_resource.keytype,
+            key: new_resource.key,
+          }
+        else
+          raise "key_hash: Unsupported resource #{new_resource.declared_type}"
+        end
       end
 
       private
 
-      def authorized_key_file_resource_exist?
+      def ssh_template_resource_exist?
         begin
-          r = find_resource!(:template, new_resource.authorized_key_file)
+          r = find_resource!(:template, new_resource.ssh_generate_file)
         rescue Chef::Exceptions::ResourceNotFound
           return false
         end
@@ -29,13 +55,21 @@ module UserSsh
         false
       end
 
-      def create_authorized_key_file_resource
+      def create_ssh_template_resource
         with_run_context :root do
-          edit_resource(:template, new_resource.authorized_key_file) do
+          edit_resource(:directory, ::File.join(new_resource.home, '.ssh')) do
+            recursive true
+
+            user new_resource.user
+            group new_resource.group
+            mode '0600'
+          end
+
+          edit_resource(:template, new_resource.ssh_generate_file) do
             source new_resource.template
             cookbook new_resource.cookbook
 
-            owner new_resource.owner
+            owner new_resource.user
             group new_resource.group
             mode new_resource.mode
             sensitive new_resource.sensitive
