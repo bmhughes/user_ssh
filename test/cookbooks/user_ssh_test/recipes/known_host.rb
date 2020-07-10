@@ -1,6 +1,6 @@
 #
 # Cookbook:: user_ssh_test
-# Recipe:: testing_user
+# Recipe:: known_host
 #
 # Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk> <bmhughes@bmhughes.co.uk>
 #
@@ -16,7 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-user 'testuser01' do
-  password 'testuser01pass'
-  action :create
+user_ssh_known_host 'testhost' do
+  user 'testuser01'
+  key 'AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAInmlzdHAyNTYAAABBBMGCI1q4BvctMzIPGRwLZsyZRjbIzy0Qmai8gJd+rVvmbBzqhjSspKkHeKUOQSEc+JTsP/JjFdUgEii83uWTsm0='
+  keytype 'ecdsa-sha2-nistp256'
 end

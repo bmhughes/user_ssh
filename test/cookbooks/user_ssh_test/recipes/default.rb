@@ -2,7 +2,7 @@
 # Cookbook:: user_ssh_test
 # Recipe:: default
 #
-# Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>
+# Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk> <bmhughes@bmhughes.co.uk>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,3 +18,4 @@
 
 include_recipe '::testing_user'
 include_recipe '::user_authorized_key'
+include_recipe '::known_host'
