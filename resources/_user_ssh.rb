@@ -27,6 +27,7 @@ property :user, [Integer, String],
           description: 'Owner of the generated file'
 
 property :group, [Integer, String],
+          default: lazy { user },
           description: 'Group of the generated file'
 
 property :mode, String,
