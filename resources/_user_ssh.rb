@@ -49,9 +49,6 @@ property :keytype, String,
 property :key, String,
           required: true
 
-property :comment, String,
-          default: lazy { comment_default }
-
 property :validate_key, [true, false],
           default: true
 
