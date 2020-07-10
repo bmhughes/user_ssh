@@ -48,7 +48,6 @@ jobs:
           - 'ubuntu-2004'
         suite:
           - 'default'
-          - 'config'
       fail-fast: false
 
     steps:
