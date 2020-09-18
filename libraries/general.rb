@@ -4,6 +4,8 @@
 #
 # Copyright:: Ben Hughes <bmhughes@bmhughes.co.uk>, All Rights Reserved.
 
+require 'etc'
+
 module UserSsh
   module Cookbook
     module GeneralHelpers
@@ -20,6 +22,19 @@ module UserSsh
         else
           raise "user_ssh_file: Unsupported resource #{declared_type}"
         end
+      end
+
+      def user_primary_group(user)
+        raise_error(type: ArgumentError) unless user.is_a?(String) || user.is_a?(Integer)
+
+        user_passwd = case user
+                      when String
+                        Etc.getpwnam(user)
+                      when Integer
+                        Etc.getpwuid(user)
+                      end
+
+        Etc.getgrgid(user_passwd.gid).name
       end
 
       def comment_default
