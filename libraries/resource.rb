@@ -62,7 +62,7 @@ module UserSsh
 
             user new_resource.user
             group new_resource.group
-            mode '0600'
+            mode '0700'
           end
 
           edit_resource(:template, new_resource.ssh_generate_file) do
