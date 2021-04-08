@@ -57,9 +57,13 @@ module UserSsh
 
       def create_ssh_template_resource
         with_run_context :root do
-          edit_resource(:directory, ::File.join(new_resource.home, '.ssh')) do
-            recursive true
+          edit_resource(:directory, new_resource.home) do
+            user new_resource.user
+            group new_resource.group
+            mode '0700'
+          end unless ::Dir.exist?(new_resource.home)
 
+          edit_resource(:directory, ::File.join(new_resource.home, '.ssh')) do
             user new_resource.user
             group new_resource.group
             mode '0700'
