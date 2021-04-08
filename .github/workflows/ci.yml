@@ -42,7 +42,8 @@ jobs:
         os:
           - 'centos-7'
           - 'centos-8'
-          - 'fedora-31'
+          - 'centos-stream-8'
+          - 'fedora-33'
           - 'debian-10'
           - 'ubuntu-1804'
           - 'ubuntu-2004'
