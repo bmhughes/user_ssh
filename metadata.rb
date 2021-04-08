@@ -3,7 +3,7 @@ maintainer 'Ben Hughes'
 maintainer_email 'bmhughes@bmhughes.co.uk'
 license 'Apache-2.0'
 description 'Configures user SSH keys and options'
-version '0.2.1'
+version '0.2.2'
 chef_version '>= 16.0'
 
 issues_url 'https://github.com/bmhughes/user_ssh/issues'
