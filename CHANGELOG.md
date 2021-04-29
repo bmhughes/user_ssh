@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v1.0.0 (2021-04-29)
+
+- Set resources to unified_mode for Chef 17
+
 ## v0.2.2 (2021-04-08)
 
 - Fix home directory creation with incorrect owner/group
